@@ -1,6 +1,6 @@
 ---
 title: Rpg-Dice
-sidebar_position: 4
+sidebar_position: 114
 sidebar_label: Rpg Dice
 ---
 

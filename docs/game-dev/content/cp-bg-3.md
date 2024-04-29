@@ -2,7 +2,7 @@
 title: CP Backgrounds 3
 description: Cyberpunk Backgrounds 3
 sidebar_position: 9
-sidebar_label: CP Backgrounds 3
+sidebar_label: CyberpunkBg 3.0
 ---
 
 # Logo

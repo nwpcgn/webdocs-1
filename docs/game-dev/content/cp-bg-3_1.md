@@ -2,11 +2,14 @@
 title: CP Backgrounds 3.1
 description: Cyberpunk Backgrounds 3.1
 sidebar_position: 10
-sidebar_label: CP Backgrounds 3.1
+sidebar_label: CyberpunkBg 3.1
 ---
 
 
+
+
  ![https://nwp-cgn.de/img/poser/cp_logo_1.gif](https://nwp-cgn.de/img/poser/cp_logo_1.gif)
+
 
 
 ## Vanilla JS

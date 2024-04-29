@@ -1,5 +1,7 @@
 ---
+title: BB-Docs
 sidebar_position: 1
+sidebar_label: Home
 ---
 
 # Tutorial Intro
