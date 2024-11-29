@@ -1,0 +1,449 @@
+--- 
+title: Battle 1
+tags: 
+    - BB
+    - tag
+sidebar_label: Battle 1
+sidebar_position: 40 
+---
+
+
+
+```javascript title="pokmn.js"
+import wildPokemon from "./classes/wildPokemon"
+import moves from "./classes/moves"
+import sleep from "./classes/sleep"
+import { updateMessages } from "./classes/msg"
+let wildPokemonId: number
+let moveId: number
+let damage: number = 0
+let playerMove: number
+let playerTurn = false
+let pokemonHealth: number = 50
+
+
+let actions: HTMLElement
+
+function clearActions() {
+	while (actions.firstChild) {
+		actions.removeChild(actions.firstChild)
+	}
+}
+
+function createButton(text: string, onClick: () => void) {
+	const button = document.createElement('button')
+	button.className = 'btn btn-sm'
+	button.textContent = text
+	button.addEventListener('click', onClick)
+	actions.appendChild(button)
+}
+
+function createRestartButton() {
+	const restartButton = document.createElement('button')
+	restartButton.className = 'btn btn-neutral btn-sm btn-block'
+	restartButton.textContent = 'Restart'
+	restartButton.addEventListener('click', () => {
+		restartFight()
+	})
+	actions.appendChild(restartButton)
+}
+
+function callWildPokemonId() {
+	wildPokemonId = Math.floor(Math.random() * wildPokemon.length)
+	console.log({ wildPokemonId })
+}
+
+
+
+function callMoveId() {
+	moveId = Math.floor(Math.random() * moves.length)
+}
+
+function callMoveDamage() {
+	damage = Math.floor(Math.random() * moves[moveId].baseDmg + 3)
+}
+
+function callPlayerMoveDamage() {
+	damage = Math.floor(Math.random() * moves[playerMove].baseDmg + 3)
+}
+
+function selectMove() {
+	clearActions()
+	moves.forEach((move, index) => {
+		createButton(move.move, () => {
+			playerMove = index
+			callPlayerMoveDamage()
+			playerAttack()
+		})
+	})
+}
+
+async function wildPokemonAttack() {
+
+	if (pokemonHealth > 0) {
+		pokemonHealth -= damage
+		updateMessages(
+			`Wild ${wildPokemon[wildPokemonId].type} uses ${moves[moveId].move} dealing ${damage} damage!`,
+			`text-error`
+		)
+		// await sleep(2500)
+		updateMessages(`Player has ${pokemonHealth} health remaining!`, `text-info`)
+		// await sleep(2500)
+		attackLoop()
+	} else {
+		wildPokemonKo()
+	}
+}
+
+async function playerAttack() {
+	// console.log('playerAttack()', {
+	// 	damage,
+	// 	playerMove,
+	// 	pokemonHealth,
+	// 	playerMove,
+	// 	playerTurn
+	// })
+	updateMessages(
+		`Player uses ${moves[playerMove].move} dealing ${damage} damage!`,
+		`font-bold`
+	)
+	// await sleep(2500)
+	if (wildPokemon[wildPokemonId].health > 0) {
+		wildPokemon[wildPokemonId].health -= damage
+		updateMessages(
+			`${wildPokemon[wildPokemonId].type} has ${wildPokemon[wildPokemonId].health} health remaining!`,
+			`text-info`
+		)
+		// await sleep(2500)
+		playerTurn = false
+		wildPokemonTurn()
+	} else {
+		wildPokemonKo()
+	}
+}
+
+function attackLoop() {
+	if (playerTurn === false) {
+		playerTurn = true
+		callMoveDamage()
+		wildPokemonAttack()
+	} else {
+		playerTurn = false
+		selectMove()
+	}
+}
+
+function wildPokemonKo() {
+	console.log("KKKKOOOOOOOO");
+	updateMessages(`${wildPokemon[wildPokemonId].type} is K.O.`, 'text-success')
+	createRestartButton() // Show restart button
+}
+
+async function wildPokemonTurn() {
+	if (wildPokemon[wildPokemonId].health < 1) {
+		wildPokemonKo()
+	} else {
+		attackLoop()
+	}
+}
+
+function randomPokemon() {
+	callWildPokemonId()
+	callMoveId()
+}
+
+function startFight() {
+	randomPokemon()
+
+	updateMessages(`Wild ${wildPokemon[wildPokemonId].type} appears!`, `heading`)
+	updateMessages(
+		`Level : ${wildPokemon[wildPokemonId].level} Health : ${wildPokemon[wildPokemonId].health}`,
+		`sub-heading`
+	)
+	playerTurn = false
+	attackLoop()
+}
+
+function restartFight() {
+	clearActions()
+	messages.innerHTML = '' // Clear messages
+	pokemonHealth = 50 // Reset player health
+	startFight() // Start the fight again
+}
+
+// document.addEventListener("DOMContentLoaded", startFight);
+
+export function initGame() {
+	actions = document.getElementById('actions') as HTMLDivElement
+	startFight()
+}
+
+```
+
+
+## Wild pokmn
+
+
+
+```javascript title="title"
+interface Sprites {
+	front: string
+	back: string
+}
+
+class WildPokemon {
+	private type: string
+	private _level: number
+	private _health: number
+	private sprites: Sprites
+
+	constructor(type: string, level: number, health: number, sprites: Sprites) {
+		this.type = type
+		this._level = level
+		this._health = health
+		this.sprites = sprites
+	}
+
+	get level(): number {
+		return this._level
+	}
+
+	set level(newLevel: number) {
+		if (newLevel > 0) {
+			this._level = newLevel
+		} else {
+            this._level = 0
+		}
+	}
+
+	get health(): number {
+		return this._health
+	}
+
+	set health(newHealth: number) {
+		if (newHealth >= 0) {
+			this._health = newHealth
+		} else {
+            this._health = 0
+		}
+	}
+
+	get frontSprite(): string {
+		return this.sprites.front
+	}
+
+	get backSprite(): string {
+		return this.sprites.back
+	}
+}
+
+const wildPokemon: WildPokemon[] = [
+	new WildPokemon('Quilava', 6, 9, {
+		front:
+			'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/156.png',
+		back: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/156.png'
+	}),
+	new WildPokemon('Rhydon', 6, 9, {
+		front:
+			'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/112.png',
+		back: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/112.png'
+	}),
+	new WildPokemon('Makuhita', 7, 9, {
+		front:
+			'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/296.png',
+		back: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/296.png'
+	}),
+	new WildPokemon('Mew', 8, 9, {
+		front:
+			'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/151.png',
+		back: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/151.png'
+	})
+]
+export default wildPokemon
+
+// Beispiel für die Verwendung der Getter- und Setter-Methoden
+// console.log(zubat.level); // 6
+// zubat.level = 7;
+// console.log(zubat.level); // 7
+
+// console.log(zubat.health); // 20
+// zubat.health = 18;
+// console.log(zubat.health); // 18
+
+class Move {
+	move: string
+	baseDmg: number
+	baseDice: number
+
+	constructor(move: string, baseDmg: number, baseDice: number) {
+		this.move = move
+		this.baseDmg = baseDmg
+		this.baseDice = baseDice
+	}
+}
+
+const moves: Move[] = [
+	new Move('Slam', 5, 6),
+	new Move('Headbutt', 4, 4),
+	new Move('Tackle', 3, 4),
+	new Move('Cut', 4, 4)
+]
+
+export default moves
+
+```
+
+
+
+## Prototyp
+
+```html title="prototype.js"
+
+const $ = q => document.querySelector(q)
+const on = (elem, event, callback) => elem.addEventListener(event, callback)
+const resources = {
+  wood: 3,
+  food: 35,
+}
+const population = {
+  ready: 15,
+  hungry: 0,
+  sick: 0,
+  hurt: 0,
+}
+const achievements = {
+  carpentry: {
+    cost: {
+      wood: 10,
+      food: 10,
+      people: 4
+    }
+  },
+  shipyard: {
+    requires: [
+      'carpentry'
+    ]
+  }
+}
+
+const date = new Date('1499/05/13')
+const DAY = 10000
+
+on($('#chop-wood'), 'click', () => fetchWood())
+on($('#forage'), 'click', () => forage())
+on($('#hunt'), 'click', () => hunt())
+
+const log = (text, color) => {
+  if ($('#log .new')) {
+    setTimeout(() => log(text, color), 500)
+    return
+  }
+  const newLog = document.createElement('p')
+  newLog.innerText = text
+  if (color) newLog.classList.add(color)
+  newLog.classList.add('new')
+  $('#log').prepend(newLog)
+  setTimeout(() => {
+    newLog.classList.remove('new')
+  }, 200)
+}
+
+const fetchWood = () => {
+  population.ready -= 2
+  setTimeout(bring('wood', 2, 5, 0.05), DAY * 0.5)
+  log('🌳👬 2 people set off to bring wood.')
+  updateView()
+}
+
+const forage = () => {
+  population.ready -= 2
+  setTimeout(bring('food', 2, 4, 0), DAY * 0.3)
+  log('🌾👬 2 people have gone foraging.')
+  updateView()
+}
+
+const hunt = () => {
+  population.ready -= 4
+  setTimeout(bring('food', 4, 12, 0.1), DAY * 0.6)
+  log('🏹👨‍👩‍👦‍👦 4 hunters left to bring food.')
+  updateView()
+}
+
+const bring = (resource, partySize, amount, risk) => () => {
+  if (Math.random() > risk) {
+    log(`🌟 A party of ${partySize} has returned with ${amount} ${resource} successfully.`)
+    resources[resource] += amount
+    population.ready += partySize
+  } else {
+    log(`💀 A party of ${partySize} returned from fetching ${resource}, but got attacked by wild animals. 1 person died`, 'red')
+    resources[resource] += Math.floor(amount / 2)
+    population.ready += partySize - 1
+    blink('population', 'red')
+  }
+  updateView()
+  blink(resource, 'green')
+}
+
+const blink = (resource, color) => {
+  $(`#${resource}`).classList.add(color)
+  setTimeout(() => {
+    $(`#${resource}`).classList.remove(color)
+  }, 100);
+}
+
+const updateView = () => {
+  $('#wood .value').innerText = resources.wood
+  $('#food .value').innerText = resources.food
+
+  $('#population .value').innerText = population.ready
+  $('#hungry .value').innerText = population.hungry
+  if (population.hungry < 1) {
+    $('#hungry').classList.add('hidden')
+  } else {
+    $('#hungry').classList.remove('hidden')
+  }
+  
+  $('#forage').disabled = population.ready < 2
+  $('#chop-wood').disabled = population.ready < 2
+  $('#hunt').disabled = population.ready < 4
+}
+
+updateDate = () => {
+  date.setDate(date.getDate() + 1)
+  $('#days .value').innerText = `${date.getDate()} / ${date.getMonth() + 1} / ${date.getFullYear()}`
+}
+
+const nextDay = () => {
+  updateDate()
+  
+  if ((population.ready + population.hungry) < 1) {
+    log(`💀💀💀 Your population was decimated`, 'red')
+    stop()
+  }
+  if (population.hungry > 0) {
+    population.hungry -= 1
+    log(`💀 One person has died from starvation. +5 food.`, 'red')
+    resources.food += 5
+  }
+  
+  population.ready += population.hungry
+  population.hungry = 0
+
+  resources.food -= population.ready
+  if (resources.food < 0) {
+    population.ready += resources.food
+    population.hungry += -resources.food
+    resources.food = 0
+    log(`😞 Due to lack of food, ${population.hungry} are starving and can't work.`, 'red')
+  }
+  updateView()
+}
+
+// init
+const dayInterval = setInterval(nextDay, DAY)
+const stop = () => {
+  clearInterval(dayInterval)
+}
+updateDate()
+updateView()
+```

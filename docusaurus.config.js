@@ -78,7 +78,12 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          {to: '/blog', label: 'Article', position: 'left'}
+          {to: '/blog', label: 'Article', position: 'left'},
+          {
+            href: '/helloMarkdown',
+            label: 'Studio',
+            position: 'right',
+          }
         ],
       },
       footer: {
@@ -124,7 +129,7 @@ const config = {
           //   ],
           // },
         ],
-        copyright: `©${new Date().getFullYear()} by nwp-studio`,
+        copyright: `©${new Date().getFullYear()} by blackburn-Studio`,
       },
       prism: {
         theme: prismThemes.github,
