@@ -1,7 +1,7 @@
 ﻿---
 title: Battle 1
 sidebar_label: Battle 1
-sidebar_position: 81
+sidebar_position: 70
 ---
 
 
