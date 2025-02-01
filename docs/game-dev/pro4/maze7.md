@@ -1,16 +1,70 @@
 ﻿---
-title: GameDev 7
+title: Tilemap Ts
 tags: 
     - Gamedev
     - JS
 sidebar_position: 32
-sidebar_label: GameDev 7
+sidebar_label: Tilemap Ts
 ---
 
 Sicher, hier ist eine strukturierte Version des Codes, der die Initialisierung, das Rendering und das Update in separate Funktionen aufteilt. Die Variablen `canvas`, `context` und `camera` werden erst nach `window.onload` initialisiert:
 
+
+```typescript title="types.ts"
+// types.ts
+export interface Tilemap {
+    compressionlevel: number;
+    height: number;
+    infinite: boolean;
+    layers: Layer[];
+    nextlayerid: number;
+    nextobjectid: number;
+    orientation: string;
+    renderorder: string;
+    tiledversion: string;
+    tileheight: number;
+    tilesets: Tileset[];
+    tilewidth: number;
+    type: string;
+    version: string;
+    width: number;
+}
+
+export interface Layer {
+    data: number[];
+    height: number;
+    id: number;
+    name: string;
+    opacity: number;
+    type: string;
+    visible: boolean;
+    width: number;
+    x: number;
+    y: number;
+}
+
+export interface Tileset {
+    firstgid: number;
+    columns: number;
+    image: string;
+    imageheight: number;
+    imagewidth: number;
+    margin: number;
+    name: string;
+    spacing: number;
+    tilecount: number;
+    tiledversion: string;
+    tileheight: number;
+    tilewidth: number;
+    type: string;
+    version: string;
+}
+
+```
+
+
 ```typescript
-import { Tilemap, Layer, Tileset } from './types';
+import type { Tilemap, Layer, Tileset } from './types';
 
 class Camera {
     x: number;
