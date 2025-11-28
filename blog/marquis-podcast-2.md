@@ -9,10 +9,12 @@ tags: [blackburn, Studio]
 Titel: Die Abenteuer der Menschlichen Gummipuppe
 
 
-<!-- truncate -->
+
 
 
 In einer alternativen Realität, in der die Grenzen zwischen Fantasie und Realität verschwimmen, existiert eine geheimnisvolle Serie namens "Die Abenteuer der Menschlichen Gummipuppe". Die Serie erzählt die Geschichte von Alice, einer jungen Frau, die sich in eine lebendige Gummipuppe verwandeln kann, wann immer sie möchte.
+
+<!-- truncate -->
 
 Die erste Episode führt uns in das hektische Treiben der Großstadt, wo Alice ein unscheinbares Leben als Bibliothekarin führt. Doch hinter der Fassade einer gewöhnlichen Frau verbirgt sich ein außergewöhnliches Geheimnis. Durch einen magischen Zufall entdeckt Alice ihre Fähigkeit, sich in eine Gummipuppe zu verwandeln.
 
